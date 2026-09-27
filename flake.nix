@@ -15,19 +15,14 @@
 
       mkModdedEvolve = pkgs:
         let
+          # Essential libraries: C++ runtime, compression, and fontconfig are
+          # required by autoPatchelf for ELF binaries. vlc provides libvlc.so
+          # for LibVLCSharp media playback (which steam-run's FHS does not ship).
           runtimeLibs = with pkgs; [
             stdenv.cc.cc.lib
             zlib
-            icu
-            openssl
-            krb5
-            libx11
-            libice
-            libsm
             fontconfig
-            vulkan-loader
             vlc
-            libglvnd
           ];
         in
         pkgs.stdenv.mkDerivation rec {
