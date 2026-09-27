@@ -1,0 +1,41 @@
+name: Auto Update Flake
+
+on:
+  schedule:
+    # Check for updates every hour
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            allow-unfree = true
+
+      - name: Run update script
+        run: |
+          chmod +x ./update.sh
+          ./update.sh
+
+      - name: Commit and push if updated
+        run: |
+          if [ -n "$(git status --porcelain flake.nix flake.lock)" ]; then
+            VERSION=$(sed -n -E 's/^[[:space:]]*version = "([^"]+)";.*/\1/p' flake.nix)
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add flake.nix flake.lock
+            git commit -m "chore(auto-update): bump evolve client to ${VERSION}"
+            git push
+          else
+            echo "No updates detected; repository is up to date."
+          fi
