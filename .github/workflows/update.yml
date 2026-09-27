@@ -3,7 +3,7 @@ name: Auto Update Flake
 on:
   schedule:
     # Check for updates every hour
-    - cron: '0 * * * *'
+    - cron: '23 * * * *'
   workflow_dispatch:
 
 jobs:
