@@ -15,11 +15,6 @@
 
       mkModdedEvolve = pkgs:
         let
-          # Shared between buildInputs (for autoPatchelf) and LD_LIBRARY_PATH:
-          # - autoPatchelf ELF NEEDED: stdenv.cc.cc.lib, zlib, fontconfig
-          # - Avalonia X11 & graphics: libx11, libice, libsm, libglvnd, vulkan-loader
-          # - Media playback: vlc (LibVLCSharp dlopen)
-          # - .NET runtime, crypto & net: openssl, icu, krb5
           runtimeLibs = with pkgs; [
             stdenv.cc.cc.lib
             zlib
@@ -35,7 +30,7 @@
             libglvnd
           ];
         in
-        pkgs.stdenv.mkDerivation rec {
+        pkgs.stdenv.mkDerivation {
           pname = "modded-evolve";
           version = "0.1.67";
 
@@ -47,8 +42,6 @@
           nativeBuildInputs = with pkgs; [ autoPatchelfHook makeWrapper ];
           buildInputs = runtimeLibs;
 
-          # libcoreclrtraceptprovider.so links against liblttng-ust.so.0 (old ABI),
-          # which is only needed for optional tracing. Skip it.
           autoPatchelfIgnoreMissingDeps = [ "liblttng-ust.so.0" ];
 
           dontConfigure = true;
