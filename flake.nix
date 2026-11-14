@@ -32,11 +32,11 @@
         in
         pkgs.stdenv.mkDerivation {
           pname = "modded-evolve";
-          version = "0.2.44";
+          version = "0.2.45";
 
           src = pkgs.fetchurl {
             url = "https://assets.modded-evolve.com/client/linux/ModdedEvolveClient-Setup.run";
-            hash = "sha256-B4e+3kd205rDyUr1m2cSjZBBANY8lxKmLO2wyarxhmA=";
+            hash = "sha256-HWgWPDBGMTXqUeTT1YaNed6BgH941xTo9fBQYPzcFxU=";
           };
 
           nativeBuildInputs = with pkgs; [ autoPatchelfHook makeWrapper ];
